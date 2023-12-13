@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 void main() {
   runApp(const MyToDoApp());
 }
-
 class Task {
   final String title;
   bool isCompleted;
-
   Task({required this.title, this.isCompleted = false});
-
+  // Convert Task object to JSON format
   Map<String, dynamic> toJson() {
     return {
       'title': title,
       'isCompleted': isCompleted,
     };
   }
-
+  // Convert JSON data to Task object
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
       title: json['title'],
@@ -25,10 +22,8 @@ class Task {
     );
   }
 }
-
 class MyToDoApp extends StatelessWidget {
   const MyToDoApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -59,6 +54,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
     loadTasks();
   }
 
+  // Load tasks from SharedPreferences
   Future<void> loadTasks() async {
     _prefs = await SharedPreferences.getInstance();
     final List<String>? taskList = _prefs.getStringList('tasks');
@@ -69,6 +65,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
     }
   }
 
+  // Save tasks to SharedPreferences
   Future<void> saveTasks() async {
     List<String> taskList = tasks.map((task) => task.toJson().toString()).toList();
     await _prefs.setStringList('tasks', taskList);
@@ -82,6 +79,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
       ),
       body: Column(
         children: [
+          // Text input and Add button
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Row(
@@ -110,6 +108,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
               ],
             ),
           ),
+          // List of tasks
           Expanded(
             child: ListView.builder(
               itemCount: tasks.length,
@@ -119,7 +118,7 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                     tasks[index].title,
                     style: TextStyle(
                       decoration: tasks[index].isCompleted
-                          ? TextDecoration.lineThrough
+                          ? TextDecoration.lineThrough // Strike through if task is completed
                           : TextDecoration.none,
                     ),
                   ),
